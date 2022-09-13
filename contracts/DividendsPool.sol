@@ -75,8 +75,6 @@ contract DividendsPool is Ownable {
     }
 
     function buyLottery(uint256 userRandNum) external {
-        FOX_TOKEN.lotteryBurn(msg.sender, LOTTERY_COST);        
-
         //Create lottery
         Lottery memory lottery = 
             Lottery(
@@ -88,6 +86,8 @@ contract DividendsPool is Ownable {
             FOX_TOKEN.balanceOf(msg.sender), 
             FOX_TOKEN.totalSupply());
         lotteries.push(lottery);
+
+        FOX_TOKEN.lotteryBurn(msg.sender, LOTTERY_COST);        
     }
 
     function drawLottery(uint32 lotteryId, uint256 preimage) public {
@@ -99,7 +99,7 @@ contract DividendsPool is Ownable {
         require(keccak256(abi.encode(preimage)) == randNumHashes[lotteryId], "Invalid preimage"); 
         lottery.revealedRandNum = preimage;
 
-        uint256 rewardAmount = _calculateRewardAmount(lottery);
+        uint256 rewardAmount = _evaluateReward(lottery);
         if (rewardAmount != 0) {
             lottery.rewardAmount = rewardAmount;
             _sendReward(lotteryId, lottery.user, rewardAmount);
@@ -118,11 +118,11 @@ contract DividendsPool is Ownable {
         emit lotteryWon(lotteryId, winner, rewardAmount);
     }
 
-    function _calculateRewardAmount(Lottery memory lottery) internal view returns(uint256) {
+    function _evaluateReward(Lottery memory lottery) internal view returns(uint256) {
         uint256 composedRandNum = uint256(keccak256(abi.encode(lottery.revealedRandNum + lottery.userRandNum)));
         uint256 rewardAmount = 
             composedRandNum <= ~uint256(0) / 100 * LOTTERY_WIN_RATIO
-            ? lottery.foxUserHoldingsSnapshot * lottery.poolSizeSnapshot * LOTTERY_REWARD_COEFFICIENT / lottery.foxSupplySnapshot
+            ? calculateRewardAmount(lottery.foxUserHoldingsSnapshot, lottery.poolSizeSnapshot, lottery.foxSupplySnapshot, LOTTERY_REWARD_COEFFICIENT)   
             : 0 ;
         if (rewardAmount >= currentPoolSize()) rewardAmount = currentPoolSize();
         return rewardAmount;
@@ -138,4 +138,12 @@ contract DividendsPool is Ownable {
         }
     }
 
+    function calculateRewardAmount(
+        uint256 foxHoldings,
+        uint256 poolSize,
+        uint256 foxSupply,
+        uint256 coefficient
+    ) public pure returns(uint256) {
+        return foxHoldings * poolSize * coefficient / foxSupply;
+    }
 }
