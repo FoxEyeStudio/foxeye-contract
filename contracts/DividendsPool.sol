@@ -90,7 +90,7 @@ contract DividendsPool is Ownable {
         lotteries.push(lottery);
     }
 
-    function drawLottery(uint32 lotteryId, uint256 preimage) external {
+    function drawLottery(uint32 lotteryId, uint256 preimage) public {
         require(lotteries.length > lotteryId, "Non-existent lottery");
         require(randNumHashes.length >= lotteryId, "Add more randNumHashes first");
 
@@ -103,6 +103,13 @@ contract DividendsPool is Ownable {
         if (rewardAmount != 0) {
             lottery.rewardAmount = rewardAmount;
             _sendReward(lotteryId, lottery.user, rewardAmount);
+        }
+    }
+
+    function drawLotteries(uint32[] calldata lotteryIds, uint256[] calldata preimages) external {
+        require(lotteryIds.length == preimages.length, "Asymmetric batch");
+        for (uint32 i = 0; i < preimages.length; i++) {
+            drawLottery(lotteryIds[i], preimages[i]);
         }
     }
 
