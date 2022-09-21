@@ -31,7 +31,7 @@ contract Airdrop is Ownable {
 
     function claim(uint256 seasonId, uint256 amount, address receiver, bytes32[] calldata proof) external {    
         require(seasonId < seasons.length, "Non-exsitent season");
-        require(seasonEnded(seasonId), "Ongoing season");
+        require(isSeasonEnded(seasonId), "Ongoing season");
         require(seasons[seasonId].merkleRoot != DEFAULT_ROOT, "Manager hasn't registered airdrop list");
         require(!isClaimed[seasonId][receiver], "Claimed"); 
 
@@ -43,7 +43,7 @@ contract Airdrop is Ownable {
 
     function startSeason() external onlyOwner {
         if (seasons.length != 0) {
-            require(seasonEnded(seasons.length - 1));
+            require(isSeasonEnded(seasons.length - 1));
             require(block.timestamp - seasons[0].startBlockTimestamp <= TOTAL_DEADLINE); // admin can't start new seasons after total deadline
         }        
         season memory newSeason = season(DEFAULT_ROOT, block.timestamp);
@@ -51,11 +51,11 @@ contract Airdrop is Ownable {
     }
 
     function airdropRegister(bytes32 merkleRoot) external onlyOwner {
-        require(seasonEnded(seasons.length - 1), "Ongoing season");
+        require(isSeasonEnded(seasons.length - 1), "Ongoing season");
         seasons[seasons.length - 1].merkleRoot = merkleRoot;
     }
 
-    function seasonEnded(uint256 seasonId) public view returns(bool) {
+    function isSeasonEnded(uint256 seasonId) public view returns(bool) {
         return seasons[seasonId].startBlockTimestamp + block.timestamp >= SEASON_DEADLINE;
     }
 
