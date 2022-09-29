@@ -91,3 +91,6 @@ artifacts
 
 #OS files
 .DS_Store
+
+#Project secret files
+record/

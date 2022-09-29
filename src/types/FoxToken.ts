@@ -336,7 +336,7 @@ export interface FoxToken extends BaseContract {
     ): Promise<ContractTransaction>;
 
     lotteryBurn(
-      addr: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -428,7 +428,7 @@ export interface FoxToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   lotteryBurn(
-    addr: PromiseOrValue<string>,
+    account: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -520,7 +520,7 @@ export interface FoxToken extends BaseContract {
     ): Promise<boolean>;
 
     lotteryBurn(
-      addr: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -644,7 +644,7 @@ export interface FoxToken extends BaseContract {
     ): Promise<BigNumber>;
 
     lotteryBurn(
-      addr: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -737,7 +737,7 @@ export interface FoxToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     lotteryBurn(
-      addr: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

@@ -13,10 +13,10 @@ if (!mnemonic) {
   throw new Error("Please set your MNEMONIC in a .env file");
 }
 
-const privateKey: string | undefined = process.env.PRIVATE_KEY;
-if (!privateKey) {
-  throw new Error("Please set your PRIVATE_KEY in a .env file");
-}
+// const privateKey: string | undefined = process.env.PRIVATE_KEY;
+// if (!privateKey) {
+//   throw new Error("Please set your PRIVATE_KEY in a .env file");
+// }
 
 const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
 if (!infuraApiKey) {
@@ -44,15 +44,20 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       jsonRpcUrl = "https://api.avax.network/ext/bc/C/rpc";
       break;
     case "bsc":
-      jsonRpcUrl = "https://bsc-dataseed1.binance.org";
+      jsonRpcUrl = "https://bsc-dataseed2.ninicoin.io";
       break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
   }
   return {
-    accounts: [privateKey as string],
+    accounts: {
+    count: 10,
+    initialIndex: 0,
+    mnemonic: mnemonic,
+    path: "m/44'/60'/0'/0",
+    },
     chainId: chainIds[chain],
-    url: jsonRpcUrl,
+    url: jsonRpcUrl,    
   };
 }
 

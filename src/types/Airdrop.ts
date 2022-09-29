@@ -34,11 +34,12 @@ export interface AirdropInterface extends utils.Interface {
     "TOTAL_DEADLINE()": FunctionFragment;
     "airdropRegister(bytes32)": FunctionFragment;
     "claim(uint256,uint256,address,bytes32[])": FunctionFragment;
+    "isClaimed(uint256,address)": FunctionFragment;
+    "isSeasonEnded(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "seasonEnded(uint256)": FunctionFragment;
     "seasons(uint256)": FunctionFragment;
-    "startSeason(bytes32)": FunctionFragment;
+    "startSeason()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -49,9 +50,10 @@ export interface AirdropInterface extends utils.Interface {
       | "TOTAL_DEADLINE"
       | "airdropRegister"
       | "claim"
+      | "isClaimed"
+      | "isSeasonEnded"
       | "owner"
       | "renounceOwnership"
-      | "seasonEnded"
       | "seasons"
       | "startSeason"
       | "transferOwnership"
@@ -79,14 +81,18 @@ export interface AirdropInterface extends utils.Interface {
       PromiseOrValue<BytesLike>[]
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "isClaimed",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSeasonEnded",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seasonEnded",
-    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "seasons",
@@ -94,7 +100,7 @@ export interface AirdropInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "startSeason",
-    values: [PromiseOrValue<BytesLike>]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -115,13 +121,14 @@ export interface AirdropInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isClaimed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isSeasonEnded",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seasonEnded",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "seasons", data: BytesLike): Result;
@@ -199,26 +206,34 @@ export interface Airdrop extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    isClaimed(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isSeasonEnded(
+      seasonId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    seasonEnded(
-      seasonId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     seasons(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber] & { merkleRoot: string; startBlock: BigNumber }
+      [string, BigNumber] & {
+        merkleRoot: string;
+        startBlockTimestamp: BigNumber;
+      }
     >;
 
     startSeason(
-      merkleRoot: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -247,26 +262,31 @@ export interface Airdrop extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  isClaimed(
+    arg0: PromiseOrValue<BigNumberish>,
+    arg1: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isSeasonEnded(
+    seasonId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  seasonEnded(
-    seasonId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   seasons(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber] & { merkleRoot: string; startBlock: BigNumber }
+    [string, BigNumber] & { merkleRoot: string; startBlockTimestamp: BigNumber }
   >;
 
   startSeason(
-    merkleRoot: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -295,26 +315,32 @@ export interface Airdrop extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    isClaimed(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    seasonEnded(
+    isSeasonEnded(
       seasonId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     seasons(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber] & { merkleRoot: string; startBlock: BigNumber }
+      [string, BigNumber] & {
+        merkleRoot: string;
+        startBlockTimestamp: BigNumber;
+      }
     >;
 
-    startSeason(
-      merkleRoot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    startSeason(overrides?: CallOverrides): Promise<void>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -353,15 +379,21 @@ export interface Airdrop extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    isClaimed(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isSeasonEnded(
+      seasonId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    seasonEnded(
-      seasonId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     seasons(
@@ -370,7 +402,6 @@ export interface Airdrop extends BaseContract {
     ): Promise<BigNumber>;
 
     startSeason(
-      merkleRoot: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -400,15 +431,21 @@ export interface Airdrop extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    isClaimed(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isSeasonEnded(
+      seasonId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    seasonEnded(
-      seasonId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     seasons(
@@ -417,7 +454,6 @@ export interface Airdrop extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     startSeason(
-      merkleRoot: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

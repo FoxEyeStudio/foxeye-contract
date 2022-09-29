@@ -7,14 +7,16 @@ import {IERC20} from "./open-zeppelin/IERC20.sol";
 import {FoxToken} from "./FoxToken.sol";
 
 
+
 contract DividendsPool is Ownable {
         
-    uint256 public immutable FEE_RATE; // Ad commision fee rate for Fox DAO 
+    uint256 public immutable FEE_RATE; // Ad commision fee rate for Fox DAO ,20
     address public feeReceiver;
 
     uint256 public immutable LOTTERY_WIN_RATIO; //10
     uint256 public immutable LOTTERY_COST; //30
     uint256 public immutable LOTTERY_REWARD_COEFFICIENT; //100
+    uint256 private constant MAX_REWARD_RATIO = 5;//reciprocal
 
     FoxToken public immutable FOX_TOKEN;
     IERC20 public immutable STABLE_COIN; // The stable token required by depositing
@@ -119,12 +121,11 @@ contract DividendsPool is Ownable {
     }
 
     function _evaluateReward(Lottery memory lottery) internal view returns(uint256) {
-        uint256 composedRandNum = uint256(keccak256(abi.encode(lottery.revealedRandNum + lottery.userRandNum)));
+        uint256 composedRandNum = uint256(keccak256(abi.encode(lottery.revealedRandNum, lottery.userRandNum)));
         uint256 rewardAmount = 
             composedRandNum <= ~uint256(0) / 100 * LOTTERY_WIN_RATIO
             ? calculateRewardAmount(lottery.foxUserHoldingsSnapshot, lottery.poolSizeSnapshot, lottery.foxSupplySnapshot, LOTTERY_REWARD_COEFFICIENT)   
             : 0 ;
-        if (rewardAmount >= currentPoolSize()) rewardAmount = currentPoolSize();
         return rewardAmount;
     }
 
@@ -143,7 +144,9 @@ contract DividendsPool is Ownable {
         uint256 poolSize,
         uint256 foxSupply,
         uint256 coefficient
-    ) public pure returns(uint256) {
-        return foxHoldings * poolSize * coefficient / foxSupply;
+    ) public view returns(uint256) {
+        uint256 rewardAmount = foxHoldings * poolSize * coefficient / foxSupply;
+        if (rewardAmount >= currentPoolSize()/MAX_REWARD_RATIO) rewardAmount = currentPoolSize()/MAX_REWARD_RATIO;
+        return rewardAmount;
     }
 }

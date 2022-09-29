@@ -37,9 +37,11 @@ export interface DividendsPoolInterface extends utils.Interface {
     "STABLE_COIN()": FunctionFragment;
     "appendRandNumHash(bytes32[])": FunctionFragment;
     "buyLottery(uint256)": FunctionFragment;
+    "calculateRewardAmount(uint256,uint256,uint256,uint256)": FunctionFragment;
     "changeFeeReceiver(address)": FunctionFragment;
     "currentPoolSize()": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
+    "drawLotteries(uint32[],uint256[])": FunctionFragment;
     "drawLottery(uint32,uint256)": FunctionFragment;
     "feeReceiver()": FunctionFragment;
     "lotteries(uint256)": FunctionFragment;
@@ -59,9 +61,11 @@ export interface DividendsPoolInterface extends utils.Interface {
       | "STABLE_COIN"
       | "appendRandNumHash"
       | "buyLottery"
+      | "calculateRewardAmount"
       | "changeFeeReceiver"
       | "currentPoolSize"
       | "deposit"
+      | "drawLotteries"
       | "drawLottery"
       | "feeReceiver"
       | "lotteries"
@@ -98,6 +102,15 @@ export interface DividendsPoolInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "calculateRewardAmount",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "changeFeeReceiver",
     values: [PromiseOrValue<string>]
   ): string;
@@ -108,6 +121,10 @@ export interface DividendsPoolInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "deposit",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "drawLotteries",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "drawLottery",
@@ -159,6 +176,10 @@ export interface DividendsPoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "buyLottery", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "calculateRewardAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "changeFeeReceiver",
     data: BytesLike
   ): Result;
@@ -167,6 +188,10 @@ export interface DividendsPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "drawLotteries",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "drawLottery",
     data: BytesLike
@@ -192,7 +217,7 @@ export interface DividendsPoolInterface extends utils.Interface {
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
-    "depositDone(address,uint256,uint256)": EventFragment;
+    "depositDone(uint256,address,uint256)": EventFragment;
     "lotteryWon(uint256,address,uint256)": EventFragment;
   };
 
@@ -214,12 +239,12 @@ export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface depositDoneEventObject {
+  adId: BigNumber;
   depositor: string;
   amount: BigNumber;
-  AdId: BigNumber;
 }
 export type depositDoneEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
+  [BigNumber, string, BigNumber],
   depositDoneEventObject
 >;
 
@@ -286,6 +311,14 @@ export interface DividendsPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    calculateRewardAmount(
+      foxHoldings: PromiseOrValue<BigNumberish>,
+      poolSize: PromiseOrValue<BigNumberish>,
+      foxSupply: PromiseOrValue<BigNumberish>,
+      coefficient: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     changeFeeReceiver(
       newFeeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -295,6 +328,12 @@ export interface DividendsPool extends BaseContract {
 
     deposit(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    drawLotteries(
+      lotteryIds: PromiseOrValue<BigNumberish>[],
+      preimages: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -368,6 +407,14 @@ export interface DividendsPool extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  calculateRewardAmount(
+    foxHoldings: PromiseOrValue<BigNumberish>,
+    poolSize: PromiseOrValue<BigNumberish>,
+    foxSupply: PromiseOrValue<BigNumberish>,
+    coefficient: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   changeFeeReceiver(
     newFeeReceiver: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -377,6 +424,12 @@ export interface DividendsPool extends BaseContract {
 
   deposit(
     amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  drawLotteries(
+    lotteryIds: PromiseOrValue<BigNumberish>[],
+    preimages: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -450,6 +503,14 @@ export interface DividendsPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    calculateRewardAmount(
+      foxHoldings: PromiseOrValue<BigNumberish>,
+      poolSize: PromiseOrValue<BigNumberish>,
+      foxSupply: PromiseOrValue<BigNumberish>,
+      coefficient: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     changeFeeReceiver(
       newFeeReceiver: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -459,6 +520,12 @@ export interface DividendsPool extends BaseContract {
 
     deposit(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    drawLotteries(
+      lotteryIds: PromiseOrValue<BigNumberish>[],
+      preimages: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -518,15 +585,15 @@ export interface DividendsPool extends BaseContract {
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
-    "depositDone(address,uint256,uint256)"(
+    "depositDone(uint256,address,uint256)"(
+      adId?: PromiseOrValue<BigNumberish> | null,
       depositor?: PromiseOrValue<string> | null,
-      amount?: null,
-      AdId?: null
+      amount?: null
     ): depositDoneEventFilter;
     depositDone(
+      adId?: PromiseOrValue<BigNumberish> | null,
       depositor?: PromiseOrValue<string> | null,
-      amount?: null,
-      AdId?: null
+      amount?: null
     ): depositDoneEventFilter;
 
     "lotteryWon(uint256,address,uint256)"(
@@ -564,6 +631,14 @@ export interface DividendsPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    calculateRewardAmount(
+      foxHoldings: PromiseOrValue<BigNumberish>,
+      poolSize: PromiseOrValue<BigNumberish>,
+      foxSupply: PromiseOrValue<BigNumberish>,
+      coefficient: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     changeFeeReceiver(
       newFeeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -573,6 +648,12 @@ export interface DividendsPool extends BaseContract {
 
     deposit(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    drawLotteries(
+      lotteryIds: PromiseOrValue<BigNumberish>[],
+      preimages: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -631,6 +712,14 @@ export interface DividendsPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    calculateRewardAmount(
+      foxHoldings: PromiseOrValue<BigNumberish>,
+      poolSize: PromiseOrValue<BigNumberish>,
+      foxSupply: PromiseOrValue<BigNumberish>,
+      coefficient: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     changeFeeReceiver(
       newFeeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -640,6 +729,12 @@ export interface DividendsPool extends BaseContract {
 
     deposit(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    drawLotteries(
+      lotteryIds: PromiseOrValue<BigNumberish>[],
+      preimages: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
