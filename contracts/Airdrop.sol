@@ -35,7 +35,7 @@ contract Airdrop is Ownable {
         require(seasons[seasonId].merkleRoot != DEFAULT_ROOT, "Manager hasn't registered airdrop list");
         require(!isClaimed[seasonId][receiver], "Claimed"); 
 
-        bytes32 leaf = bytes32(abi.encode(receiver, amount));       
+        bytes32 leaf = keccak256(abi.encode(receiver, amount));       
         require(MerkleProof.verifyCalldata(proof, seasons[seasonId].merkleRoot, leaf), "Invalid merkle proof");
         FOX_TOKEN.airdropMint(receiver, amount);
         isClaimed[seasonId][receiver] = true;
@@ -56,7 +56,7 @@ contract Airdrop is Ownable {
     }
 
     function isSeasonEnded(uint256 seasonId) public view returns(bool) {
-        return seasons[seasonId].startBlockTimestamp + block.timestamp >= SEASON_DEADLINE;
+        return block.timestamp - seasons[seasonId].startBlockTimestamp >= SEASON_DEADLINE;
     }
 
 }
