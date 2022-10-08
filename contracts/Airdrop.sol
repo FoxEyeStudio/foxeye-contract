@@ -43,7 +43,8 @@ contract Airdrop is Ownable {
 
     function startSeason() external onlyOwner {
         if (seasons.length != 0) {
-            require(isSeasonEnded(seasons.length - 1));
+            require(isSeasonEnded(seasons.length - 1), "Ongoing season");
+            require(seasons[seasons.length - 1].merkleRoot != DEFAULT_ROOT, "Merkle root of previous season not set");
             require(block.timestamp - seasons[0].startBlockTimestamp <= TOTAL_DEADLINE); // admin can't start new seasons after total deadline
         }        
         season memory newSeason = season(DEFAULT_ROOT, block.timestamp);
