@@ -77,6 +77,8 @@ contract DividendsPool is Ownable {
     }
 
     function buyLottery(uint256 userRandNum) external {
+        require(randNumHashes.length > lotteries.length, "Pls wait for admin add more hashes");
+
         //Create lottery
         Lottery memory lottery = 
             Lottery(
