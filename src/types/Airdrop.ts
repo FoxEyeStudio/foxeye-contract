@@ -34,6 +34,7 @@ export interface AirdropInterface extends utils.Interface {
     "TOTAL_DEADLINE()": FunctionFragment;
     "airdropRegister(bytes32)": FunctionFragment;
     "claim(uint256,uint256,address,bytes32[])": FunctionFragment;
+    "getSeasonsLength()": FunctionFragment;
     "isClaimed(uint256,address)": FunctionFragment;
     "isSeasonEnded(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -50,6 +51,7 @@ export interface AirdropInterface extends utils.Interface {
       | "TOTAL_DEADLINE"
       | "airdropRegister"
       | "claim"
+      | "getSeasonsLength"
       | "isClaimed"
       | "isSeasonEnded"
       | "owner"
@@ -80,6 +82,10 @@ export interface AirdropInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BytesLike>[]
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSeasonsLength",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isClaimed",
@@ -121,6 +127,10 @@ export interface AirdropInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getSeasonsLength",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isClaimed", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isSeasonEnded",
@@ -206,6 +216,8 @@ export interface Airdrop extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getSeasonsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     isClaimed(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<string>,
@@ -262,6 +274,8 @@ export interface Airdrop extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getSeasonsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
   isClaimed(
     arg0: PromiseOrValue<BigNumberish>,
     arg1: PromiseOrValue<string>,
@@ -314,6 +328,8 @@ export interface Airdrop extends BaseContract {
       proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getSeasonsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     isClaimed(
       arg0: PromiseOrValue<BigNumberish>,
@@ -379,6 +395,8 @@ export interface Airdrop extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getSeasonsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
     isClaimed(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<string>,
@@ -430,6 +448,8 @@ export interface Airdrop extends BaseContract {
       proof: PromiseOrValue<BytesLike>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    getSeasonsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isClaimed(
       arg0: PromiseOrValue<BigNumberish>,

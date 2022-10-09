@@ -6,8 +6,8 @@ async function main() {
     const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
     const ONE_MONTH_IN_SECS = 30 * 24 * 60 * 60;
     const feeReceiver = '0x12C33E63551E9dc8A073edBdeeDf04fC98B944E4'; // replace this address in production
-    const STABLE_COIN_ADDR = '0x47c4845d5E43507638Acd5553EE42132175D5656'; // Rinkeby test USDT
-    // const STABLE_COIN_ADDR = '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56'; // BUSD on BSC
+    // const STABLE_COIN_ADDR = '0x47c4845d5E43507638Acd5553EE42132175D5656'; // Rinkeby test USDT
+    const STABLE_COIN_ADDR = '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56'; // BUSD on BSC
 
 
     const FoxToken = await ethers.getContractFactory("FoxToken");

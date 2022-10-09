@@ -27,7 +27,7 @@ function generateRandom():pair[] {
     let pairs: pair[] = new Array<pair>();
     for(let i = 0; i < BATCH_LENGTH; i++) {
         const preimage = ethers.BigNumber.from(ethers.utils.randomBytes(32));
-        const hash = ethers.utils.keccak256(ethers.utils.hexZeroPad(preimage.toHexString(), 32) );
+        const hash = ethers.utils.keccak256(ethers.utils.hexZeroPad(preimage.toHexString(), 32));
         const pair: pair = {preimage: preimage.toString(), hash: hash};
         pairs.push(pair);
     }
