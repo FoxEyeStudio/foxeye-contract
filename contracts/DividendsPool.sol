@@ -29,6 +29,7 @@ contract DividendsPool is Ownable {
         uint256 poolSizeSnapshot;
         uint256 foxUserHoldingsSnapshot; 
         uint256 foxSupplySnapshot;
+        bool isDrawn;
     }
     Lottery[] public lotteries;
     bytes32[] public randNumHashes;
@@ -88,7 +89,8 @@ contract DividendsPool is Ownable {
             0, 
             currentPoolSize(), 
             FOX_TOKEN.balanceOf(msg.sender), 
-            FOX_TOKEN.totalSupply());
+            FOX_TOKEN.totalSupply(),
+            false);
         lotteries.push(lottery);
 
         FOX_TOKEN.lotteryBurn(msg.sender, LOTTERY_COST);        
@@ -99,13 +101,14 @@ contract DividendsPool is Ownable {
         require(randNumHashes.length >= lotteryId, "Add more randNumHashes first");
 
         Lottery storage lottery = lotteries[lotteryId];
-        require(lottery.rewardAmount == 0, "The lottery has already been drawn");        
+        require(!lottery.isDrawn, "The lottery has already been drawn");  
         require(keccak256(abi.encode(preimage)) == randNumHashes[lotteryId], "Invalid preimage"); 
         lottery.revealedRandNum = preimage;
 
         uint256 rewardAmount = _evaluateReward(lottery);
         if (rewardAmount != 0) {
             lottery.rewardAmount = rewardAmount;
+            lottery.isDrawn = true;
             _sendReward(lotteryId, lottery.user, rewardAmount);
         }
     }
@@ -151,4 +154,17 @@ contract DividendsPool is Ownable {
         if (rewardAmount >= currentPoolSize()/MAX_REWARD_RATIO) rewardAmount = currentPoolSize()/MAX_REWARD_RATIO;
         return rewardAmount;
     }
+
+    function getHashesLength() public view returns(uint256) {
+        return randNumHashes.length;
+    }
+
+    function getLotteriesLength() public view returns(uint256) {
+        return lotteries.length;
+    }
+
+    function isLotteryDrawn(uint256 lotteryId) public view returns(bool) {
+        return lotteries[lotteryId].isDrawn;
+    }
+
 }
