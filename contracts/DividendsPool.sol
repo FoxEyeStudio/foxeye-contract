@@ -106,9 +106,9 @@ contract DividendsPool is Ownable {
         lottery.revealedRandNum = preimage;
 
         uint256 rewardAmount = _evaluateReward(lottery);
+        lottery.isDrawn = true;
         if (rewardAmount != 0) {
             lottery.rewardAmount = rewardAmount;
-            lottery.isDrawn = true;
             _sendReward(lotteryId, lottery.user, rewardAmount);
         }
     }
