@@ -44,6 +44,9 @@ export interface DividendsPoolInterface extends utils.Interface {
     "drawLotteries(uint32[],uint256[])": FunctionFragment;
     "drawLottery(uint32,uint256)": FunctionFragment;
     "feeReceiver()": FunctionFragment;
+    "getHashesLength()": FunctionFragment;
+    "getLotteriesLength()": FunctionFragment;
+    "isLotteryDrawn(uint256)": FunctionFragment;
     "lotteries(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "randNumHashes(uint256)": FunctionFragment;
@@ -68,6 +71,9 @@ export interface DividendsPoolInterface extends utils.Interface {
       | "drawLotteries"
       | "drawLottery"
       | "feeReceiver"
+      | "getHashesLength"
+      | "getLotteriesLength"
+      | "isLotteryDrawn"
       | "lotteries"
       | "owner"
       | "randNumHashes"
@@ -135,6 +141,18 @@ export interface DividendsPoolInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getHashesLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLotteriesLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isLotteryDrawn",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "lotteries",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -198,6 +216,18 @@ export interface DividendsPoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "feeReceiver",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getHashesLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLotteriesLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isLotteryDrawn",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "lotteries", data: BytesLike): Result;
@@ -345,6 +375,15 @@ export interface DividendsPool extends BaseContract {
 
     feeReceiver(overrides?: CallOverrides): Promise<[string]>;
 
+    getHashesLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getLotteriesLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    isLotteryDrawn(
+      lotteryId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     lotteries(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -356,7 +395,8 @@ export interface DividendsPool extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
-        BigNumber
+        BigNumber,
+        boolean
       ] & {
         user: string;
         userRandNum: BigNumber;
@@ -365,6 +405,7 @@ export interface DividendsPool extends BaseContract {
         poolSizeSnapshot: BigNumber;
         foxUserHoldingsSnapshot: BigNumber;
         foxSupplySnapshot: BigNumber;
+        isDrawn: boolean;
       }
     >;
 
@@ -441,6 +482,15 @@ export interface DividendsPool extends BaseContract {
 
   feeReceiver(overrides?: CallOverrides): Promise<string>;
 
+  getHashesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getLotteriesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+  isLotteryDrawn(
+    lotteryId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   lotteries(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -452,7 +502,8 @@ export interface DividendsPool extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
-      BigNumber
+      BigNumber,
+      boolean
     ] & {
       user: string;
       userRandNum: BigNumber;
@@ -461,6 +512,7 @@ export interface DividendsPool extends BaseContract {
       poolSizeSnapshot: BigNumber;
       foxUserHoldingsSnapshot: BigNumber;
       foxSupplySnapshot: BigNumber;
+      isDrawn: boolean;
     }
   >;
 
@@ -501,7 +553,7 @@ export interface DividendsPool extends BaseContract {
     buyLottery(
       userRandNum: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     calculateRewardAmount(
       foxHoldings: PromiseOrValue<BigNumberish>,
@@ -537,6 +589,15 @@ export interface DividendsPool extends BaseContract {
 
     feeReceiver(overrides?: CallOverrides): Promise<string>;
 
+    getHashesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLotteriesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isLotteryDrawn(
+      lotteryId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     lotteries(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -548,7 +609,8 @@ export interface DividendsPool extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
-        BigNumber
+        BigNumber,
+        boolean
       ] & {
         user: string;
         userRandNum: BigNumber;
@@ -557,6 +619,7 @@ export interface DividendsPool extends BaseContract {
         poolSizeSnapshot: BigNumber;
         foxUserHoldingsSnapshot: BigNumber;
         foxSupplySnapshot: BigNumber;
+        isDrawn: boolean;
       }
     >;
 
@@ -665,6 +728,15 @@ export interface DividendsPool extends BaseContract {
 
     feeReceiver(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getHashesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLotteriesLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isLotteryDrawn(
+      lotteryId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     lotteries(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -745,6 +817,17 @@ export interface DividendsPool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     feeReceiver(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getHashesLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getLotteriesLength(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isLotteryDrawn(
+      lotteryId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     lotteries(
       arg0: PromiseOrValue<BigNumberish>,
