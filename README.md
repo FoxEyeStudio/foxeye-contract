@@ -1,4 +1,5 @@
-# FoxEye
+# FoxEye Contracts
+![FoxEye Plugin](./foxEyeBanner.jpg)
 ## Start
 1. `npm install --save-dev hardhat`
 2. `npx hardhat compile`
@@ -7,7 +8,7 @@
 After deployment, contract addresses of  Airdrop, FoxToken, DividendsPool will be saved to `./record/contract_addr_log.txt` for script usage.
 
 # Overview
-## ￼ FoxToken.sol
+## FoxToken.sol
 $FOX main contract. 
 
 ## Airdrop.sol
@@ -22,9 +23,6 @@ After a season ends, the admin should set the airdrop list to register valid air
 Set a list in `./script/utils/merkleHandler.ts` or read it via a file.
 
 Then run `npx hardhat run --network rinkeby scripts/setAirdropMerkle.ts`
-
-### Test a Lucky Draw
-For test & debug,  use `./script/resultCaulator.ts` to calculate a lucky number that can win for a lottery(set arguments first). This can be achieved only by the admin who knows those preimages.
 
 ## DividendsPool.sol
 Advertisers/consumers in the FoxEye ecosystem will deposit to the dividends pool to purchase services. These fees will be distributed via lotteries, which require burning $FOX to buy. Every lottery will be drawn via a fair random system.
@@ -41,7 +39,11 @@ Run this command:
 - There will be a `./record/randoms_log.txt` file containing preimages and hashes. Newly generated numbers won’t cover or occupy the original file, i.e. they just append to the end of the file.
 - Hashes will be published to your deployed contract automatically. Once you need to reveal those preimages, find the corresponding one in the `txt` file.
 - Modify `BATCH_LENGTH` in `AppendHashes.ts` to adjust how many numbers will be generated and submitted per command.
-- - YOU MUST KEEP `randoms_log.txt` SAFE AND SOUND, OR THERE WILL BE NO WAY TO RECOVER / REVEAL PREIMAGES!
+- YOU MUST KEEP `randoms_log.txt` SAFE AND SOUND, OR THERE WILL BE NO WAY TO RECOVER / REVEAL PREIMAGES!
+
 ### Draw Lotteries
 `npx hardhat run --network rinkeby scripts/drawLottery.ts`
 Set `currentLotteryId, preimage`first in the .ts file before use.
+
+### Test a Lucky Draw
+For test & debug,  use `./script/resultCaulator.ts` to calculate a lucky number that can win for a lottery(set arguments first). This can be achieved only by the admin who knows those preimages.
