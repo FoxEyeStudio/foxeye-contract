@@ -38,6 +38,7 @@ contract DividendsPool is Ownable {
 
     event depositDone(uint256 indexed adId, address indexed depositor, uint256 amount);
     event lotteryWon(uint256 indexed lotteryId, address indexed winner, uint256 amount);
+    event lotteryBought(uint256 indexed lotteryId, address indexed buyer);
 
     constructor(
         address _feeReceiver, 
@@ -77,7 +78,7 @@ contract DividendsPool is Ownable {
         return STABLE_COIN.balanceOf(address(this));
     }
 
-    function buyLottery(uint256 userRandNum) external returns(uint256) {
+    function buyLottery(uint256 userRandNum) external {
         require(randNumHashes.length > lotteries.length, "Pls wait for admin add more hashes");
 
         //Create lottery
@@ -94,7 +95,7 @@ contract DividendsPool is Ownable {
         lotteries.push(lottery);
 
         FOX_TOKEN.lotteryBurn(msg.sender, LOTTERY_COST);        
-        return lotteries.length - 1;
+        emit lotteryBought(lotteries.length - 1, msg.sender);
     }
 
     function drawLottery(uint32 lotteryId, uint256 preimage) public {

@@ -248,11 +248,13 @@ export interface DividendsPoolInterface extends utils.Interface {
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "depositDone(uint256,address,uint256)": EventFragment;
+    "lotteryBought(uint256,address)": EventFragment;
     "lotteryWon(uint256,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "depositDone"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "lotteryBought"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "lotteryWon"): EventFragment;
 }
 
@@ -279,6 +281,17 @@ export type depositDoneEvent = TypedEvent<
 >;
 
 export type depositDoneEventFilter = TypedEventFilter<depositDoneEvent>;
+
+export interface lotteryBoughtEventObject {
+  lotteryId: BigNumber;
+  buyer: string;
+}
+export type lotteryBoughtEvent = TypedEvent<
+  [BigNumber, string],
+  lotteryBoughtEventObject
+>;
+
+export type lotteryBoughtEventFilter = TypedEventFilter<lotteryBoughtEvent>;
 
 export interface lotteryWonEventObject {
   lotteryId: BigNumber;
@@ -553,7 +566,7 @@ export interface DividendsPool extends BaseContract {
     buyLottery(
       userRandNum: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
     calculateRewardAmount(
       foxHoldings: PromiseOrValue<BigNumberish>,
@@ -658,6 +671,15 @@ export interface DividendsPool extends BaseContract {
       depositor?: PromiseOrValue<string> | null,
       amount?: null
     ): depositDoneEventFilter;
+
+    "lotteryBought(uint256,address)"(
+      lotteryId?: PromiseOrValue<BigNumberish> | null,
+      buyer?: PromiseOrValue<string> | null
+    ): lotteryBoughtEventFilter;
+    lotteryBought(
+      lotteryId?: PromiseOrValue<BigNumberish> | null,
+      buyer?: PromiseOrValue<string> | null
+    ): lotteryBoughtEventFilter;
 
     "lotteryWon(uint256,address,uint256)"(
       lotteryId?: PromiseOrValue<BigNumberish> | null,
