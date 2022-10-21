@@ -45,6 +45,7 @@ export interface FoxTokenInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "symbol()": FunctionFragment;
+    "totalBurned()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -70,6 +71,7 @@ export interface FoxTokenInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "symbol"
+      | "totalBurned"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
@@ -129,6 +131,10 @@ export interface FoxTokenInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "totalBurned",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -194,6 +200,10 @@ export interface FoxTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBurned",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -351,6 +361,8 @@ export interface FoxToken extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
+    totalBurned(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transfer(
@@ -443,6 +455,8 @@ export interface FoxToken extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
+  totalBurned(overrides?: CallOverrides): Promise<BigNumber>;
+
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transfer(
@@ -532,6 +546,8 @@ export interface FoxToken extends BaseContract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
+
+    totalBurned(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -659,6 +675,8 @@ export interface FoxToken extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
+    totalBurned(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
@@ -751,6 +769,8 @@ export interface FoxToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalBurned(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

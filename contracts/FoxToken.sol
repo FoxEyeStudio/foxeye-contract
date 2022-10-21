@@ -13,9 +13,11 @@ contract FoxToken is ERC20, Ownable {
     uint256 public constant MAX_SUPPLY = 100 * 10**6 * 10**18;
     address public airdropContract;
     address public dividendsPool;
+    uint256 public totalBurned;
 
     constructor() public ERC20(NAME, SYMBOL) {        
     }
+
 
     // mint for airdrop
     function airdropMint(address account, uint256 amount) external {
@@ -34,8 +36,9 @@ contract FoxToken is ERC20, Ownable {
     }
 
     function lotteryBurn(address account,uint256 amount) external {
-        require(msg.sender == dividendsPool, "Lottery burn must be initiated from Dividends Pool");
+        require(msg.sender == dividendsPool, "Lottery burn must be initiated from Dividends Pool");    
         _burn(account, amount);
+        totalBurned += amount;
     }
 
     function updateVitalAddresses(address _airdropContract, address _dividendsPool) external onlyOwner {
