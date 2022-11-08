@@ -15,11 +15,11 @@ contract Airdrop is Ownable {
     bytes32 private constant DEFAULT_ROOT = "0x";
     FoxToken public immutable FOX_TOKEN;
 
-    struct season {
+    struct Season {
         bytes32 merkleRoot;
         uint256 startBlockTimestamp;
     }
-    season[] public seasons;    
+    Season[] public seasons;    
     mapping(uint256 => mapping(address => bool)) public isClaimed;
 
     
@@ -47,7 +47,7 @@ contract Airdrop is Ownable {
             require(seasons[seasons.length - 1].merkleRoot != DEFAULT_ROOT, "Merkle root of ended season not set");
             require(block.timestamp - seasons[0].startBlockTimestamp <= TOTAL_DEADLINE); // admin can't start new seasons after total deadline
         }        
-        season memory newSeason = season(DEFAULT_ROOT, block.timestamp);
+        Season memory newSeason = Season(DEFAULT_ROOT, block.timestamp);
         seasons.push(newSeason);
     }
 

@@ -36,9 +36,9 @@ contract DividendsPool is Ownable {
     
     uint256 private adId;
 
-    event depositDone(uint256 indexed adId, address indexed depositor, uint256 amount);
-    event lotteryWon(uint256 indexed lotteryId, address indexed winner, uint256 amount);
-    event lotteryBought(uint256 indexed lotteryId, address indexed buyer);
+    event DepositDone(uint256 indexed adId, address indexed depositor, uint256 amount);
+    event LotteryWon(uint256 indexed lotteryId, address indexed winner, uint256 amount);
+    event LotteryBought(uint256 indexed lotteryId, address indexed buyer);
 
     constructor(
         address _feeReceiver, 
@@ -71,7 +71,7 @@ contract DividendsPool is Ownable {
         STABLE_COIN.transferFrom(msg.sender, address(this), amount);
         STABLE_COIN.transfer(feeReceiver, fee);
         adId++;
-        emit depositDone(adId, msg.sender, amount);
+        emit DepositDone(adId, msg.sender, amount);
     }
 
     function currentPoolSize() public view returns (uint256) {
@@ -95,7 +95,7 @@ contract DividendsPool is Ownable {
         lotteries.push(lottery);
 
         FOX_TOKEN.lotteryBurn(msg.sender, LOTTERY_COST);        
-        emit lotteryBought(lotteries.length - 1, msg.sender);
+        emit LotteryBought(lotteries.length - 1, msg.sender);
     }
 
     function drawLottery(uint32 lotteryId, uint256 preimage) public {
@@ -124,7 +124,7 @@ contract DividendsPool is Ownable {
 
     function _sendReward(uint32 lotteryId, address winner, uint256 rewardAmount) internal {
         STABLE_COIN.transfer(winner, rewardAmount);
-        emit lotteryWon(lotteryId, winner, rewardAmount);
+        emit LotteryWon(lotteryId, winner, rewardAmount);
     }
 
     function _evaluateReward(Lottery memory lottery) internal view returns(uint256) {
